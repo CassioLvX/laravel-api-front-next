@@ -1,0 +1,52 @@
+version: '3.8'
+services:
+
+  laravel-api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: laravel-api
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./api:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  nextjs-web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: nextjs-web
+    ports:
+      - '3000:3000'
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - laravel-api
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  db:
+    image: mysql:8.0
+    container_name: db
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+    volumes:
+      - db_store_data:/var/lib/mysql
+    networks:
+      - app-network
+
+volumes:
+  db_store_data:
+
+networks:
+  app-network:
+    driver: bridge
