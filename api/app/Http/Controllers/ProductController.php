@@ -6,24 +6,30 @@ use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use App\Services\ProductService\ProductServiceInterface;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class ProductController extends Controller
 {
-    public function __construct()
-    {
 
+    protected $productService;
+
+    public function __construct(ProductServiceInterface $productService)
+    {
+        $this->productService = $productService;
     }
 
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $products = Product::paginate(5);;
+            $filters = $request->only(['min_price', 'max_price', 'page', 'per_page']);
+
+            $products = $this->productService->getAllProductsWithFilters($filters);
 
             return response()->json(new ProductCollection($products), Response::HTTP_OK);
         } catch (Exception $e) {
