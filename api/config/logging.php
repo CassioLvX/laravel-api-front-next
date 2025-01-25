@@ -58,6 +58,11 @@ return [
             'ignore_exceptions' => false,
         ],
 
+        'updated' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/updateByJob.log'),
+        ],
+
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
