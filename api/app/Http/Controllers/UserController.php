@@ -6,6 +6,7 @@ use Auth;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -29,7 +30,14 @@ class UserController extends Controller
                 ],
                 Response::HTTP_UNAUTHORIZED);
         } catch (Exception $e) {
-            return response()->json($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            Log::error('Failed to login' . self::class, [
+                'code' => 'failed_to_login' . self::class,
+                'exception' => $e,
+            ]);
+            return response()->json([
+                'message'=>'Failed to login',
+                'errorType' => $e->getMessage(),
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }

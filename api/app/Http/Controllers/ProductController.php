@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
+use App\Http\Requests\UpdatePriceRequest;
 use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
+use App\Jobs\updateProductsJob;
 use App\Models\Product;
 use App\Services\ProductService\ProductServiceInterface;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -33,10 +36,14 @@ class ProductController extends Controller
 
             return response()->json(new ProductCollection($products), Response::HTTP_OK);
         } catch (Exception $e) {
-           return response()->json([
-                'message'=>'Fail to get all itens',
-                'errorType' => $e->getMessage()
+            Log::error('Failed to retrieve products' . self::class, [
+                'code' => 'failed_to_retrieve_products' . self::class,
+                'exception' => $e,
             ]);
+            return response()->json([
+                'message'=>'Failed to retrieve products',
+                'errorType' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -45,7 +52,23 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request)
     {
-        //
+        try {
+            $data = $request->validated();
+            $this->productService->createNewProduct($data);
+
+            return response()->json([
+               'message'=>'Product created successfully',
+            ], Response::HTTP_CREATED);
+        } catch (Exception $e) {
+            Log::error('Failed to create product' . self::class, [
+                'code' => 'failed_to_create_product' . self::class,
+                'exception' => $e,
+            ]);
+            return response()->json([
+                'message'=>'Failed to create product',
+                'errorType' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -53,15 +76,18 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-
         try {
-            $product = Product::find($id);
+            $product = $this->productService->getProductById($id);
             return response()->json(new ProductResource($product), Response::HTTP_OK);
         } catch (Exception $e) {
-           return response()->json([
-                'message'=>'Fail to get all itens',
-                'errorType' => $e->getMessage()
+            Log::error('Failed to get product' . self::class, [
+                'code' => 'failed_to_get_product' . self::class,
+                'exception' => $e,
             ]);
+            return response()->json([
+                'message'=>'Failed to get product',
+                'errorType' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -70,7 +96,23 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request, string $id)
     {
-        //
+        try {
+            $data = $request->validated();
+            $this->productService->updateProduct($id, $data);
+
+            return response()->json([
+               'message'=>'Product updated successfully',
+            ], Response::HTTP_OK);
+        } catch (Exception $e) {
+            Log::error('Failed to update product' . self::class, [
+                'code' => 'failed_to_update_product' . self::class,
+                'exception' => $e,
+            ]);
+            return response()->json([
+                'message'=>'Failed to update product',
+                'errorType' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -78,6 +120,61 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $this->productService->deleteProduct($id);
+            return response()->json([
+               'message'=>'Product deleted successfully',
+            ], Response::HTTP_NO_CONTENT);
+        } catch (Exception $e) {
+            Log::error('Failed to delete product' . self::class, [
+                'code' => 'failed_to_delete_product' . self::class,
+                'exception' => $e,
+            ]);
+            return response()->json([
+                'message'=>'Failed to delete product',
+                'errorType' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function search(Request $request)
+    {
+        try {
+            $filters = $request->only(['min_price', 'max_price', 'page', 'per_page', 'search']);
+
+            $products = $this->productService->searchProductsWithFilters($filters);
+            return response()->json(new ProductResource($products), Response::HTTP_OK);
+        } catch (Exception $e) {
+            Log::error('Failed to search product' . self::class, [
+                'code' => 'failed_to_search_product' . self::class,
+                'exception' => $e,
+            ]);
+            return response()->json([
+                'message'=>'Failed to search product',
+                'errorType' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function updatePrice(UpdatePriceRequest $request)
+    {
+        try {
+            $data = $request->validated();
+
+            UpdateProductsJob::dispatch($data);
+
+            return response()->json([
+               'message'=>'Product prices updated successfully',
+            ], Response::HTTP_OK);
+        } catch (Exception $e) {
+            Log::error('Failed to update products price' . self::class, [
+                'code' => 'failed_to_update_products_price' . self::class,
+                'exception' => $e,
+            ]);
+            return response()->json([
+                'message'=>'Failed to update products price',
+                'errorType' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
