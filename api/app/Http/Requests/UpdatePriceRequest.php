@@ -11,7 +11,7 @@ class UpdatePriceRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,7 +25,6 @@ class UpdatePriceRequest extends FormRequest
             'percent' => 'required|numeric|min:0|max:100|regex:/^\d+(\.\d{1,2})?$/',
             'modify' => 'required|in:positive,negative',
             'ids' => 'required|array',
-            'ids.*' => 'required|uuid|exists:Product,id',
         ];
     }
 }

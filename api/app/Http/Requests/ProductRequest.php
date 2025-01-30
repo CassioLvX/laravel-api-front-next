@@ -21,17 +21,11 @@ class ProductRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = [
+        return [
             'name' => 'required|min:3',
             'description' => 'nullable',
             'price' => 'required|numeric|gt:0',
-            'image_path' => 'nullable|mimes:jpeg,png|max:1024',
+            'image_path' => 'nullable|mimes:JPEG,jpeg,png,PNG|max:1024',
         ];
-
-        if ($this->isMethod('post')) {
-            $rules['image_path'] = 'required|mimes:jpeg,png|max:1024';
-        }
-
-        return $rules;
     }
 }

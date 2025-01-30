@@ -54,6 +54,13 @@ class ProductController extends Controller
     {
         try {
             $data = $request->validated();
+
+            $imgPath = $this->productService->uploadImage($request);
+
+            if ($imgPath) {
+                $data['image_path'] = $imgPath;
+            }
+
             $this->productService->createNewProduct($data);
 
             return response()->json([
@@ -98,6 +105,13 @@ class ProductController extends Controller
     {
         try {
             $data = $request->validated();
+
+            $imgPath = $this->productService->uploadImage($request);
+
+            if ($imgPath) {
+                $data['image_path'] = $imgPath;
+            }
+
             $this->productService->updateProduct($id, $data);
 
             return response()->json([
@@ -132,25 +146,6 @@ class ProductController extends Controller
             ]);
             return response()->json([
                 'message'=>'Failed to delete product',
-                'errorType' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    public function search(Request $request)
-    {
-        try {
-            $filters = $request->only(['min_price', 'max_price', 'page', 'per_page', 'search']);
-
-            $products = $this->productService->searchProductsWithFilters($filters);
-            return response()->json(new ProductResource($products), Response::HTTP_OK);
-        } catch (Exception $e) {
-            Log::error('Failed to search product' . self::class, [
-                'code' => 'failed_to_search_product' . self::class,
-                'exception' => $e,
-            ]);
-            return response()->json([
-                'message'=>'Failed to search product',
                 'errorType' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
