@@ -13,7 +13,7 @@ Após clonar o repo executar os seguintes comandos nesta sequencia:
 - npm run build || yarn build
 - cd ..
 - docker compose -f 'docker-compose.yml' up -d --build
-- docker exec -it laravel-api --bash
+- docker exec -it laravel-api bash
 - php artisan optimize:clear
 - php artisan migrate --seed
 - exit
