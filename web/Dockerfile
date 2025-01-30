@@ -20,11 +20,13 @@ COPY --from=builder /app/package.json ./
 COPY --from=builder /app/package-lock.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/next.config.mjs ./
+COPY --from=builder /app/next.config.* ./
 COPY --from=builder /app/public ./public
 
 RUN npm install --only=production
 
 EXPOSE 3030
 
-CMD ["npm", "start"]
+# CMD ["npm", "start"]
+
+CMD ["node", ".next/standalone/server.js"]
