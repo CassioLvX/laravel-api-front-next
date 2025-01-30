@@ -14,6 +14,7 @@ Após clonar o repo executar os seguintes comandos nesta sequencia:
 - docker compose -f 'docker-compose.yml' up -d --build
 - docker exec -it laravel-api bash
 - php artisan optimize:clear
+- php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
 - php artisan migrate --seed
 - exit
   
