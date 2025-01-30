@@ -3,7 +3,6 @@
 Após clonar o repo executar os seguintes comandos nesta sequencia:
 
 - cd api
-- Alterar E-mail dentro do .env.example para o email que deseja receber as notificações e acessar a aplicação
 - cp .env.example .env
 - composer install
 - php artisan key:generate
@@ -29,3 +28,5 @@ Caso aconteça algum problema no build do App WEB, apague o arquivo dockfile da 
 A configuração do queue do laravel está sync.
 
 As senhas do banco de dado estão no .env raiz
+
+Alterar o email no arquivo api/database/seeders/DatabaseSeeder.php para receber as notificações
