@@ -40,4 +40,22 @@ class UserController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
     }
+
+    public function getUser(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            return response()->json(  $user,Response::HTTP_OK );
+        } catch (Exception $e) {
+            Log::error('Failed to get user data' . self::class, [
+                'code' => 'failed_to_get_user_data' . self::class,
+                'exception' => $e,
+            ]);
+            return response()->json([
+                'message'=>'Failed to get user data',
+                'errorType' => $e->getMessage(),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
 }
