@@ -2,6 +2,7 @@
 
 namespace App\Repositories\ProductRepository;
 
+use App\Http\Resources\PriceRangeResource;
 use App\Models\Product;
 use App\Repositories\Repository;
 use Exception;
@@ -29,7 +30,10 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
                 $query->where('price', '<=', $filters['max_price']);
             }
 
-            $perPage = !empty($filters['per_page']) ? $filters['per_page'] : 5;
+            $perPage = !empty($filters['per_page']) ? $filters['per_page'] : 10;
+
+            $_SESSION['MinPrice'] = $query->min('price');
+            $_SESSION['MaxPrice'] = $query->max('price');
 
             return $query->paginate($perPage)->withQueryString();
         } catch (Exception $e) {
@@ -55,7 +59,7 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
                 $query->where('price', '<=', $filters['max_price']);
             }
 
-            $perPage = !empty($filters['per_page']) ? $filters['per_page'] : 5;
+            $perPage = !empty($filters['per_page']) ? $filters['per_page'] : 10;
 
             return $query->paginate($perPage)->withQueryString();
         } catch (Exception $e) {

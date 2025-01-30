@@ -2,7 +2,10 @@
 
 namespace App\Services\ProductService;
 
+use App\Http\Requests\ProductRequest;
+use App\Notifications\EmailNotify;
 use App\Repositories\ProductRepository\ProductRepositoryInterface;
+use Auth;
 use Illuminate\Support\Facades\Log;
 
 class ProductService implements ProductServiceInterface
@@ -48,8 +51,23 @@ class ProductService implements ProductServiceInterface
         foreach ($productsData['ids'] as $id) {
             $dataPrepared = $this->prepareData($id, $productsData);
             $this->updateProduct($id, $dataPrepared);
+            Auth::user()->notify(new EmailNotify([$id]));
             Log::channel('updated')->info('Product updated: '. $id);
         }
+    }
+
+    public function uploadImage(ProductRequest $request): string | bool
+    {
+        if (! $request->hasFile('image_path')) {
+            return false;
+        }
+
+        $image = $request->file('image_path');
+        $imageName = 'test' . time() . '.' . $image->getClientOriginalExtension();
+        $imagePath = 'uploads';
+        $image->move(public_path($imagePath), $imageName);
+
+        return 'http://' . $_SERVER['HTTP_HOST'] . '/' . $imagePath . '/' . $imageName;
     }
 
     private function prepareData(string $id, array $data)

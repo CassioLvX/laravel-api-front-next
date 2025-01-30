@@ -23,6 +23,10 @@ class ProductCollection extends ResourceCollection
                     'min_price' => $request->min_price,
                     'max_price' => $request->max_price,
                 ],
+                'price_range' => [
+                    'minPriceValue' => $_SESSION['MinPrice'],
+                    'maxPriceValue' => $_SESSION['MaxPrice'],
+                ],
             ],
         ];
     }
