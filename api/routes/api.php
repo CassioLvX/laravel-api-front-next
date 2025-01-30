@@ -15,14 +15,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/login', [UserController::class, 'login']);
+Route::post('/login', [UserController::class, 'login'])->name('login');
+
+//Public
+Route::get('/product', [ProductController::class, 'index']);
+Route::get('/product/{id}', [ProductController::class, 'show']);
+
+//Protected
+Route::get('/user', [UserController::class, 'getUser'])->middleware('auth:sanctum');
+Route::put('/update-price', [ProductController::class, 'updatePrice'])->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
-    Route::post('/', [ProductController::class, 'store']);
     Route::get('/{id}', [ProductController::class, 'show']);
-    Route::put('/{id}', [ProductController::class, 'update']);
+    Route::post('/', [ProductController::class, 'store']);
+    /* o Verbo HTTP PUT não recebe multiform/data no Laravel, tem um bug canonico */
+    Route::post('/{id}', [ProductController::class, 'update']);
     Route::delete('/{id}', [ProductController::class, 'destroy']);
-    Route::post('/search', [ProductController::class, 'search']);
-    Route::post('/update-price', [ProductController::class, 'updatePrice']);
 });
