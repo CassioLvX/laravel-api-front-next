@@ -8,7 +8,7 @@ Após clonar o repo executar os seguintes comandos nesta sequencia:
 - composer install
 - php artisan key:generate
 - cd ..
-- cd api
+- cd web
 - npm install || yarn install
 - npm run build || yarn build
 - cd ..
