@@ -6,7 +6,7 @@ Após clonar o repo executar os seguintes comandos nesta sequencia:
 - Alterar E-mail dentro do .env.example para o email que deseja receber as notificações e acessar a aplicação
 - cp .env.example .env
 - composer install
-- php artisan generate:key
+- php artisan key:generate
 - cd ..
 - cd api
 - npm install || yarn install
