@@ -64,8 +64,8 @@ export default function EditProduct({
     const formData = new FormData();
     formData.append('name', name);
     formData.append('description', description);
-    formData.append('price', price.toString());
-    formData.append('image_path', image);
+    formData.append('price', price.toString());    
+    if (image) formData.append('image', image);
 
     try {
         const updatedProduct = await updateProduct(id, formData);

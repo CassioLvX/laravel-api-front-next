@@ -14,7 +14,14 @@ export default function ShopPage() {
   const [productsData, setProductsData] = useState<ProductCollection | null>(null);
   const [minMaxValue, setMinMaxValue] = useState<any>(null);
 
+  const fetchData = async () => {
+    await fetch('/sanctum/csrf-cookie', {
+      method: 'GET',
+      credentials: 'include',
+    });
+
   useEffect(() => {
+    fetchData();
     const loadProducts = async () => {
       const min_price = searchParams.get('min_price') ?? null;
       const max_price = searchParams.get('max_price') ?? null;
