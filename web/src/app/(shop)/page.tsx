@@ -19,6 +19,7 @@ export default function ShopPage() {
       method: 'GET',
       credentials: 'include',
     });
+  }
 
   useEffect(() => {
     fetchData();
