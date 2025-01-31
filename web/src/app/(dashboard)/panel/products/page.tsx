@@ -1,8 +1,8 @@
 'use client'
 
-import React, { Suspense,useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { deleteProduct, getAllProducts } from '@/app/services/requestService';
+import { deleteProduct, getAllProductsOnAuth } from '@/app/services/requestService';
 import { Meta, Product, ProductCollection } from '@/app/interfaces/productInterface';
 import PercentageForm from '@/app/(dashboard)/_components/percentageForm';
 import useProtectedRoute from '@/app/hooks/useProtectedRoute';
@@ -30,7 +30,7 @@ export default function ProductsList() {
         const page = searchParams.get('page') ?? '1';
         const per_page = searchParams.get('per_page') ?? '10';
 
-        const data = await getAllProducts(page, per_page, { min_price, max_price });
+        const data = await getAllProductsOnAuth(page, per_page, { min_price, max_price });
         console.log(data);
         setProducts(data);
         setPagination(data.meta);

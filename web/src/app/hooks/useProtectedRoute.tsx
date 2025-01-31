@@ -3,16 +3,16 @@ import { useAuth } from '@/app/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 
 const useProtectedRoute = () => {
-    const { user, loading } = useAuth();
+    const { loading, token } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
-        if (!loading && !user) {
+        if (!loading && !token) {
             router.push('/login');
         }
-    }, [user, loading, router]);
+    }, [token, loading, router]);
 
-    return user;
+    return token;
 };
 
 export default useProtectedRoute;

@@ -21,6 +21,7 @@ class UserController extends Controller
                 return response()->json([
                         'token' => $user->createToken('auth_token')->plainTextToken,
                         'type' => 'Bearer',
+                        'user' => $user->toArray(),
                     ],
                     Response::HTTP_OK );
             }

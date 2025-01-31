@@ -21,9 +21,31 @@ export async function getAllProducts(
   }
 }
 
+export async function getAllProductsOnAuth(
+  page: string | undefined = '1',
+  per_page: string | undefined = '10',
+  filters: { min_price?: string | null; max_price?: string | null } = {},
+): Promise<ProductCollection> {
+  try {
+    const params: Record<string, any> = { page, per_page, ...filters };
+
+    const response = await api.get(`/products`, { params });
+
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar produtos:', error);
+    throw new Error('Erro ao buscar produtos');
+  }
+}
+
 export async function getProductsById(id: string): Promise<Product> {
     const response = await api.get(`/product/${id}`);
     return response.data;
+}
+
+export async function getProductsByIdOnAuth(id: string): Promise<Product> {
+  const response = await api.get(`/products/${id}`);
+  return response.data;
 }
 
 export async function deleteProduct(id: string): Promise<ProductCollection> {

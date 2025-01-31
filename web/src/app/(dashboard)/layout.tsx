@@ -6,7 +6,6 @@ import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessu
 import { AuthProvider } from '@/app/contexts/AuthContext';
 import useProtectedRoute from '@/app/hooks/useProtectedRoute';
 
-
 import "../globals.css";
 
 const navigation = [

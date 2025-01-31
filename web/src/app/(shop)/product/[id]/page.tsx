@@ -1,4 +1,4 @@
-import { getProductsById } from "../../../services/requestService";
+import { getProductsById, getProductsByIdOnAuth } from "../../../services/requestService";
 import { Product } from '../../../interfaces/productInterface';
 import { Suspense } from "react";
 
@@ -11,7 +11,7 @@ export default async function ProductPage(props: { params: paramsType }) {
         return <div>Product not found</div>;
     }
 
-    const productDetails: Product = await getProductsById( id );
+    const productDetails: Product = await getProductsByIdOnAuth( id );
 
 return (
     <Suspense fallback={<div>Loading...</div>}>
